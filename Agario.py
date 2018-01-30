@@ -6,13 +6,16 @@ import sys
 
 ##TODO
 ##SET THE SCREEN SIZE TO THE SIZE OF THE MONITOR 
-turtle.setup(2000, 2000)
+window = turtle.Screen()
+window.screensize()
+window.setup(width = 1.0, height = 1.0)
+
 SCREEN_WIDTH = int(turtle.getcanvas().winfo_width() / 2)
 SCREEN_HEIGHT = int(turtle.getcanvas().winfo_height() / 2)
 
 NUMBER_OF_BALLS = 5
 MINIMUM_BALL_RADIUS = 10
-MAXIMUN_BALL_RADIUS = 100
+MAXIMUM_BALL_RADIUS = 100
 MINIMUM_BALL_DX = -5
 MAXIMUM_BALL_DX = 5
 MINIMUM_BALL_DY = -5
@@ -27,13 +30,47 @@ ACCELARATION_OF_BALL = 5
 RADIUS_TO_WIN = 1000
 
 ##WRITE CLONE
+SCORE_FONT_SIZE = 16
+SCORE_FONT_TYPE = "bold"
+SCORE_FONT_NAME = "Helvetica"
+SCORE_COLOR = "grey"
+
+WRITE_FONT_SIZE = 100
+WRITE_FONT_TYPE = "normal"
+WRITE_FONT_NAME = "Courier"
+WRITE_COLOR = (189, 105, 56)
+
+TIME_FONT_SIZE = 16
+TIME_FONT_TYPE = "bold"
+TIME_FONT_NAME = "Helvetica"
+TIME_COLOR = "black"
+
+CREDITS_FONT_SIZE = 16
+CREDITS_FONT_TYPE = "bold"
+CREDITS_FONT_NAME = "Courier"
+CREDITS_COLOR = "orange"
+
 writeToScreen = turtle.clone()
-writeToScreen.color("grey")
 writeToScreen.ht()
+writeToScreen.color(WRITE_COLOR)
+
+scoreWrite = turtle.clone()
+scoreWrite.color(SCORE_COLOR)
+scoreWrite.ht()
+
+timeWrite = turtle.clone()
+timeWrite.color(TIME_COLOR)
+timeWrite.ht()
+timeScore = 0
+
+creditWrite = turtle.clone()
+creditWrite.color(CREDITS_COLOR)
+creditWrite.ht()
+
 
 MIN_FOOD_RADIUS = 3
 MAX_FOOD_RADIUS = 7
-MAX_FOOD_NUM = 100
+MAX_FOOD_NUM = 150
 
 ##The decay value of the ball
 DECAY = 0.003
@@ -41,7 +78,7 @@ DECAY = 0.003
 BALLS = []
 FOOD = []
 
-MY_BALL = Ball(0, 0, 2, 2, 30, (25, 25, 125))
+MY_BALL = Ball(0, 0, 4, 4, 30, (25, 25, 125))
 
 RUNNING = True
 SLEEP = 0.0077
@@ -71,13 +108,13 @@ def createEnemies():
 		isCrash = True
 
 		while isCrash == True:
-			radius = random.randint(MINIMUM_BALL_RADIUS, MAXIMUN_BALL_RADIUS)
-			x = random.randint(-SCREEN_WIDTH + MAXIMUN_BALL_RADIUS, SCREEN_WIDTH - MAXIMUN_BALL_RADIUS)
-			y = random.randint(-SCREEN_HEIGHT + MAXIMUN_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUN_BALL_RADIUS)
+			radius = random.randint(MINIMUM_BALL_RADIUS, MAXIMUM_BALL_RADIUS)
+			x = random.randint(-SCREEN_WIDTH + MAXIMUM_BALL_RADIUS, SCREEN_WIDTH - MAXIMUM_BALL_RADIUS)
+			y = random.randint(-SCREEN_HEIGHT + MAXIMUM_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUM_BALL_RADIUS)
 
-			while ((x < MY_BALL.x + MY_BALL.radius + radius and x > MY_BALL.x - MY_BALL.radius - radius) and (y < MY_BALL.y + MY_BALL.radius + radius and y > MY_BALL.y - MY_BALL.radius - radius) and MY_BALL.radius < MAXIMUN_BALL_RADIUS):
-				x = random.randint(-SCREEN_WIDTH + MAXIMUN_BALL_RADIUS, SCREEN_WIDTH - MAXIMUN_BALL_RADIUS)
-				y = random.randint(-SCREEN_HEIGHT + MAXIMUN_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUN_BALL_RADIUS)	
+			while ((x < MY_BALL.x + MY_BALL.radius + radius and x > MY_BALL.x - MY_BALL.radius - radius) and (y < MY_BALL.y + MY_BALL.radius + radius and y > MY_BALL.y - MY_BALL.radius - radius) and MY_BALL.radius < MAXIMUM_BALL_RADIUS):
+				x = random.randint(-SCREEN_WIDTH + MAXIMUM_BALL_RADIUS, SCREEN_WIDTH - MAXIMUM_BALL_RADIUS)
+				y = random.randint(-SCREEN_HEIGHT + MAXIMUM_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUM_BALL_RADIUS)	
 
 			color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 			dx = 0
@@ -97,15 +134,13 @@ def createEnemies():
 			else:
 				ball.ht()
 				del ball
-				
-
 createEnemies()
 
 # Will create food if there is less than X food in the map
 def createFood():
 	isCreateFood = random.random()
 
-	if isCreateFood < 0.1 and len(FOOD) < MAX_FOOD_NUM:
+	if isCreateFood < 0.2 and len(FOOD) < MAX_FOOD_NUM:
 		x = random.randint(-SCREEN_WIDTH + MAX_FOOD_RADIUS, SCREEN_WIDTH - MAX_FOOD_RADIUS)
 		y = random.randint(-SCREEN_HEIGHT + MAX_FOOD_RADIUS, SCREEN_HEIGHT - MAX_FOOD_RADIUS)
 		radius = random.randint(MIN_FOOD_RADIUS, MAX_FOOD_RADIUS)
@@ -127,14 +162,13 @@ def checkAllBallsCollision():
 				ballARadius = ballA.radius
 				ballBRadius = ballB.radius
 
-				radius = random.randint(MINIMUM_BALL_RADIUS, MAXIMUN_BALL_RADIUS)
-				x = random.randint(-SCREEN_WIDTH + MAXIMUN_BALL_RADIUS, SCREEN_WIDTH - MAXIMUN_BALL_RADIUS)
-				y = random.randint(-SCREEN_HEIGHT + MAXIMUN_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUN_BALL_RADIUS)
+				radius = random.randint(MINIMUM_BALL_RADIUS, MAXIMUM_BALL_RADIUS)
+				x = random.randint(-SCREEN_WIDTH + MAXIMUM_BALL_RADIUS, SCREEN_WIDTH - MAXIMUM_BALL_RADIUS)
+				y = random.randint(-SCREEN_HEIGHT + MAXIMUM_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUM_BALL_RADIUS)
 
-				while ((x < MY_BALL.x + MY_BALL.radius + radius and x > MY_BALL.x - MY_BALL.radius - radius) and (y < MY_BALL.y + MY_BALL.radius + radius and y > MY_BALL.y - MY_BALL.radius - radius) and MY_BALL.radius < MAXIMUN_BALL_RADIUS):
-					x = random.randint(-SCREEN_WIDTH + MAXIMUN_BALL_RADIUS, SCREEN_WIDTH - MAXIMUN_BALL_RADIUS)
-					y = random.randint(-SCREEN_HEIGHT + MAXIMUN_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUN_BALL_RADIUS)
-					print("BLA BLA BLA" + str(random.random()))	
+				while ((x < MY_BALL.x + MY_BALL.radius + radius and x > MY_BALL.x - MY_BALL.radius - radius) and (y < MY_BALL.y + MY_BALL.radius + radius and y > MY_BALL.y - MY_BALL.radius - radius) and MY_BALL.radius < MAXIMUM_BALL_RADIUS):
+					x = random.randint(-SCREEN_WIDTH + MAXIMUM_BALL_RADIUS, SCREEN_WIDTH - MAXIMUM_BALL_RADIUS)
+					y = random.randint(-SCREEN_HEIGHT + MAXIMUM_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUM_BALL_RADIUS)
 				
 				dx = 0
 				dy = 0
@@ -149,8 +183,14 @@ def checkAllBallsCollision():
 				color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
 				if ballARadius > ballBRadius:
+					ballA.radius += ballB.radius / 8
+					ballA.setRadius(ballA.radius)
+
 					ballB.setBall(x, y, dx, dy, radius, color)
 				else:
+					ballB.radius += ballA.radius / 8
+					ballB.setRadius(ballB.radius)
+
 					ballA.setBall(x, y, dx, dy, radius, color)
 
 def checkMyBallCollision():
@@ -161,13 +201,13 @@ def checkMyBallCollision():
 			MY_BALL_RADIUS = MY_BALL.radius
 			ballRadius = ball.radius
 
-			x = random.randint(-SCREEN_WIDTH + MAXIMUN_BALL_RADIUS, SCREEN_WIDTH - MAXIMUN_BALL_RADIUS)
-			y = random.randint(-SCREEN_HEIGHT + MAXIMUN_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUN_BALL_RADIUS)
+			x = random.randint(-SCREEN_WIDTH + MAXIMUM_BALL_RADIUS, SCREEN_WIDTH - MAXIMUM_BALL_RADIUS)
+			y = random.randint(-SCREEN_HEIGHT + MAXIMUM_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUM_BALL_RADIUS)
 
-			radius = random.randint(MINIMUM_BALL_RADIUS, MAXIMUN_BALL_RADIUS)
-			while ((x < MY_BALL.x + MY_BALL.radius + radius and x > MY_BALL.x - MY_BALL.radius - radius) and (y < MY_BALL.y + MY_BALL.radius + radius and y > MY_BALL.y - MY_BALL.radius - radius) and MY_BALL.radius < MAXIMUN_BALL_RADIUS):
-					x = random.randint(-SCREEN_WIDTH + MAXIMUN_BALL_RADIUS, SCREEN_WIDTH - MAXIMUN_BALL_RADIUS)
-					y = random.randint(-SCREEN_HEIGHT + MAXIMUN_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUN_BALL_RADIUS)
+			radius = random.randint(MINIMUM_BALL_RADIUS, MAXIMUM_BALL_RADIUS)
+			while ((x < MY_BALL.x + MY_BALL.radius + radius and x > MY_BALL.x - MY_BALL.radius - radius) and (y < MY_BALL.y + MY_BALL.radius + radius and y > MY_BALL.y - MY_BALL.radius - radius) and MY_BALL.radius < MAXIMUM_BALL_RADIUS):
+					x = random.randint(-SCREEN_WIDTH + MAXIMUM_BALL_RADIUS, SCREEN_WIDTH - MAXIMUM_BALL_RADIUS)
+					y = random.randint(-SCREEN_HEIGHT + MAXIMUM_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUM_BALL_RADIUS)
 					print("BLA BLA BLA" + str(random.random()))
 
 			dx = 0
@@ -193,10 +233,9 @@ def checkMyBallCollision():
 
 	return True
 
-
-def moveAround(event):
-	mouseX = event.x - SCREEN_WIDTH
-	mouseY = -(event.y - SCREEN_HEIGHT)
+def moveAround():
+	mouseX = turtle.getcanvas().winfo_pointerx() - SCREEN_WIDTH
+	mouseY = -(turtle.getcanvas().winfo_pointery() - SCREEN_HEIGHT)
 
 	ballX = MY_BALL.x
 	ballY = MY_BALL.y
@@ -206,9 +245,6 @@ def moveAround(event):
 
 	MY_BALL.dxv = (distanceX / (MY_BALL.radius * ACCELARATION_OF_BALL)) * MY_BALL.dx
 	MY_BALL.dyv = (distanceY / (MY_BALL.radius * ACCELARATION_OF_BALL)) * MY_BALL.dy
-
-	MY_BALL.move(SCREEN_WIDTH, SCREEN_HEIGHT)
-
 	#print("X: " + str(mouseX) + " Y: " + str(mouseY) + "\nPX : " + str(ballX) + " PY: " + str(ballY) + "\n\n")
 	#print(str(SCREEN_WIDTH) + " : " + str(SCREEN_HEIGHT))
 
@@ -220,7 +256,6 @@ def moveMyBall():
 		RUNNING = False
 
 	checkAllBallsCollision()
-
 
 def eatFood():
 	index = 0
@@ -249,22 +284,42 @@ def decay():
 	MY_BALL.setRadius(MY_BALL.radius)
 
 def score():
-    writeToScreen.goto(-SCREEN_WIDTH + 10, -SCREEN_HEIGHT + 10)
-    writeToScreen.clear()
-    writeToScreen.write("Score: " + str(int(MY_BALL.radius * 2)), False, "left", ("Julee", 16, "normal"))
+    scoreWrite.goto(-SCREEN_WIDTH + 10, -SCREEN_HEIGHT + 10)
+    scoreWrite.clear()
+    scoreWrite.write("Score: " + str(int(MY_BALL.radius * 2)), False, "left", (SCORE_FONT_NAME, SCORE_FONT_SIZE, SCORE_FONT_TYPE))
 
 def youWin():
-	writeToScreen.color(200, 200, 200)
-	writeToScreen.goto(-SCREEN_WIDTH / 2, 0)
+	scoreWrite.goto((-SCREEN_WIDTH / 2) + 25, -100)
+	timeWrite.goto(110,  -100)
+	creditWrite.goto(-140, -160)
+
+	writeToScreen.goto(-SCREEN_WIDTH / 2, -50)
 	writeToScreen.clear()
-	writeToScreen.write("You WIN", False, "left", ("Julee", 100, "normal"))
+	writeToScreen.write("You WIN", False, "left", (WRITE_FONT_NAME, WRITE_FONT_SIZE, WRITE_FONT_TYPE))
+	scoreWrite.write("Score: " + str(int(MY_BALL.radius * 2)), False, "left", (SCORE_FONT_NAME, 25, SCORE_FONT_TYPE))
+	timeWrite.write("Time: " + str(int(time.clock())), False, "left", (SCORE_FONT_NAME, 25, SCORE_FONT_TYPE))
+	creditWrite.write("Coder: Dan Buganim \nInspiration: Uriel", False, "left", (CREDITS_FONT_NAME, CREDITS_FONT_SIZE, CREDITS_FONT_TYPE))
 
 def youLose():
-	writeToScreen.color(200, 200, 200)
-	writeToScreen.goto(-SCREEN_WIDTH / 2, 0)
-	writeToScreen.clear()
-	writeToScreen.write("You LOSE", False, "left", ("Julee", 100, "normal"))
+	scoreWrite.goto((-SCREEN_WIDTH / 2) + 25, -100)
+	timeWrite.goto(195, -100)
+	creditWrite.goto(-90, -110)
 
+	writeToScreen.goto(-SCREEN_WIDTH / 2, -50)
+	writeToScreen.clear()
+	scoreWrite.clear()
+	timeWrite.clear()
+	writeToScreen.write("You LOSE", False, "left", (WRITE_FONT_NAME, WRITE_FONT_SIZE, WRITE_FONT_TYPE))
+	scoreWrite.write("Score: " + str(int(MY_BALL.radius * 2)), False, "left", (SCORE_FONT_NAME, 25, SCORE_FONT_TYPE))
+	timeWrite.write("Time: " + str(timeScore), False, "left", (SCORE_FONT_NAME, 25, SCORE_FONT_TYPE))
+	creditWrite.write("Coder: Dan Buganim \nInspiration: Uriel", False, "left", (CREDITS_FONT_NAME, CREDITS_FONT_SIZE, CREDITS_FONT_TYPE))
+ 
+def timerDisplay():
+	global timeScore
+	timeScore = int(time.clock())
+	timeWrite.goto(-SCREEN_WIDTH + 10, SCREEN_HEIGHT - 30)
+	timeWrite.clear()
+	timeWrite.write("Time: " + str(timeScore), False, "left", (TIME_FONT_NAME, TIME_FONT_SIZE, TIME_FONT_TYPE))
 
 while (RUNNING):
 	global SCREEN_WIDTH, SCREEN_HEIGHT
@@ -277,29 +332,25 @@ while (RUNNING):
 	moveMyBall()
 	eatFood()
 	createFood()
-	turtle.getcanvas().bind('<Motion>', moveAround)
+	moveAround()
 	
 	##ACTIVATE DECAY HERE
 	#if MY_BALL.radius > MINIMUM_BALL_RADIUS:
 	#	decay()
 
 	score()
+	timerDisplay()
 
-	if MY_BALL.radius > RADIUS_TO_WIN:
+	if MY_BALL.radius >= RADIUS_TO_WIN:
 		youWin()
-		time.sleep(3)
+		time.sleep(5)
 		sys.exit()
-		RUNNING = False
-
-	##ACTIVATE TO BREAK GAME
-	#if MY_BALL.radius > 300:
-	#	break;
 
 	getscreen().update()
 	time.sleep(SLEEP)
 
 youLose()
-time.sleep(2)
+time.sleep(5)
 print("END GAME!!!")
 
 ##TODO:
@@ -315,5 +366,7 @@ print("END GAME!!!")
 ##- make full screen - YES
 ##- make big enemies go slower - YES!
 ##- FIX SPAWN ISSUES - YES!!
-##- CHANGE ALL MAXIMUN_BALL_RADIUS TO MAXIMUM_BALL_RADIUS - I ACCIDENTALY SWAP THE N AND THE M - NO
+##- CHANGE ALL MAXIMUN_BALL_RADIUS TO MAXIMUM_BALL_RADIUS - I ACCIDENTALY SWAP THE N AND THE M - YES
 ##- MAKE YOUR ENEMY MOVE WITH YOUR HEAD
+##- Push your code to git hub once you have internet in this f***ing s***iy computer
+##- Put all the functions in a Certain class - MAYBE
