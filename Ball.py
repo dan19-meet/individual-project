@@ -48,7 +48,7 @@ class Ball(Turtle):
 		upSideBall = newY + self.radius
 		downSideBall = newY - self.radius
 
-		if (rightSideBall >= screenWidth):
+		if ((rightSideBall >= screenWidth)):
 			self.dxv = -self.dxv
 
 		if (leftSideBall <= -(screenWidth)):
